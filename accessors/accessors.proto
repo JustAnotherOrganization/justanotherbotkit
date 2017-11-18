@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package accessors;
+option go_package = "accessors";
+
+// MessageEvent is a MessageEvent from a connected network.
+message MessageEvent {
+    // Sender is who sent the message.
+    message Sender {
+        string name = 1;
+        string id = 2;
+    }
+
+    Sender sender = 1;
+    string origin = 2;
+    string body = 3;
+}
