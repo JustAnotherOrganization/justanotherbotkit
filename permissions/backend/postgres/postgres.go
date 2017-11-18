@@ -12,7 +12,8 @@ const (
 	sqlInsertUser = `INSERT into "%s" (id, perms, groups)
 	VALUES ($1, $2, $3);`
 	sqlSelectUser  = `SELECT id from "%s" where id = $1;`
-	sqlInsertPerms = `INSERT into "%s" (perms) VALUES ($1)
+	sqlUpdatePerms = `UPDATE "%s"
+	SET perms = $1
 	WHERE id = $2;`
 	sqlSelectPerms = `SELECT perms from "%s" where id = $1;`
 )
@@ -96,7 +97,7 @@ func (p *pg) SetPerms(id string, perm ...string) error {
 		}
 	}()
 
-	if _, err := tx.Exec(fmt.Sprintf(sqlInsertPerms, p.table), id); err != nil {
+	if _, err := tx.Exec(fmt.Sprintf(sqlUpdatePerms, p.table), perm, id); err != nil {
 		return err
 	}
 

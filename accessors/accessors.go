@@ -9,6 +9,6 @@ type (
 		TunnelEvents(chan MessageEvent, chan error, chan error)
 		// SendMessage allows a process to send a message through the Accessor
 		// to a connected network.
-		SendMessage(string, string) error
+		SendMessage(msg string, dest string) error
 	}
 )
