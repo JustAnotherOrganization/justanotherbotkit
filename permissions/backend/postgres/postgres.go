@@ -9,8 +9,8 @@ import (
 )
 
 const (
-	sqlInsertUser = `INSERT into "%s" (id, perms, groups)
-	VALUES ($1, $2, $3);`
+	sqlInsertUser = `INSERT into "%s" (id, name, perms, groups)
+	VALUES ($1, $2, $3, $4);`
 	sqlSelectUser  = `SELECT id from "%s" where id = $1;`
 	sqlUpdatePerms = `UPDATE "%s"
 	SET perms = $1
@@ -47,7 +47,7 @@ func New(conf *pgx.ConnPoolConfig, table string) (backend.DB, error) {
 }
 
 // WriteUser writes a new ID to postgres.
-func (p *pg) WriteUser(id string) error {
+func (p *pg) WriteUser(id, name string) error {
 	tx, err := p.pool.Begin()
 	if err != nil {
 		return err
@@ -60,7 +60,7 @@ func (p *pg) WriteUser(id string) error {
 		}
 	}()
 
-	if _, err := tx.Exec(fmt.Sprintf(sqlInsertUser, p.table), id, []string{}, []int32{}); err != nil {
+	if _, err := tx.Exec(fmt.Sprintf(sqlInsertUser, p.table), id, name, []string{}, []int32{}); err != nil {
 		return err
 	}
 

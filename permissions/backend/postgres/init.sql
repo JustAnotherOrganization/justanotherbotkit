@@ -26,6 +26,7 @@ SET default_with_oids = false;
 
 CREATE TABLE permissions (
     id character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
     perms character varying(255)[] NOT NULL,
     groups integer[] NOT NULL
 );
@@ -39,6 +40,13 @@ ALTER TABLE permissions OWNER TO ing;
 
 ALTER TABLE ONLY permissions
     ADD CONSTRAINT permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: permissions_name_idx; Type: INDEX; Schema: public; Owner: ing
+--
+
+CREATE UNIQUE INDEX permissions_name_idx ON permissions USING btree (name);
 
 
 --

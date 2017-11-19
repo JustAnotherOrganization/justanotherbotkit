@@ -24,13 +24,13 @@ func NewManager(db backend.DB) (*Manager, error) {
 }
 
 // NewUser creates a new user in the database.
-func (pm *Manager) NewUser(id string, perms ...string) (*User, error) {
+func (pm *Manager) NewUser(id, name string, perms ...string) (*User, error) {
 	if id == "" {
 		return nil, errors.New("id cannot be empty")
 	}
 
 	// Write the user to the database.
-	if err := pm.db.WriteUser(id); err != nil {
+	if err := pm.db.WriteUser(id, name); err != nil {
 		return nil, err
 	}
 
