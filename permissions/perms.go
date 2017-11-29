@@ -1,8 +1,9 @@
 package permissions
 
 import (
+	"errors"
+
 	"github.com/justanotherorganization/justanotherbotkit/permissions/backend"
-	"github.com/pkg/errors"
 )
 
 type (

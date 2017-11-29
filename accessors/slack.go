@@ -3,7 +3,6 @@ package accessors
 import (
 	"errors"
 	"fmt"
-	"sync"
 
 	sl "github.com/nlopes/slack"
 	"github.com/sirupsen/logrus"
@@ -14,11 +13,10 @@ type slack struct {
 	log   *logrus.Entry
 	api   *sl.Client
 	rtm   *sl.RTM
-	wg    *sync.WaitGroup
 }
 
 // NewSlack returns a new Accessor for the Slack network.
-func NewSlack(token string, log *logrus.Entry, wg *sync.WaitGroup) (Accessor, error) {
+func NewSlack(token string, log *logrus.Entry) (Accessor, error) {
 	if token == "" || len(token) <= 0 {
 		return nil, errors.New("slack token cannot be empty")
 	}
@@ -27,14 +25,9 @@ func NewSlack(token string, log *logrus.Entry, wg *sync.WaitGroup) (Accessor, er
 		log = logrus.NewEntry(logrus.New())
 	}
 
-	if wg == nil {
-		wg = &sync.WaitGroup{}
-	}
-
 	return &slack{
 		log:   log,
 		token: token,
-		wg:    wg,
 	}, nil
 }
 
@@ -43,9 +36,7 @@ func (s *slack) TunnelEvents(eventCh chan MessageEvent, errCh, stopCh chan error
 	s.rtm = s.api.NewRTM()
 
 	go func() {
-		s.wg.Add(1)
 		s.rtm.ManageConnection()
-		s.wg.Done()
 	}()
 
 out:
