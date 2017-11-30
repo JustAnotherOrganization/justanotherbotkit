@@ -1,2 +1,2 @@
 # justanotherbotkit
-A go based skeleton for housing chat bot infrastructure.
+go based utilities for chat bot infrastructure.
