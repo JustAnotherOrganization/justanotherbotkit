@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package transport_proto;
+option go_package = "pb";
+
+// BaseEvent is a network event.
+message BaseEvent {
+    // Origin is the origin of a message.
+    message Origin {
+        // Sender sent the message via the origin.
+        message Sender {
+            string ID = 1;
+            string Name = 2;
+        }
+
+        string ID = 2;
+        Sender sender = 3;
+    }
+
+    Origin origin = 1;
+    string Body = 2;
+}
