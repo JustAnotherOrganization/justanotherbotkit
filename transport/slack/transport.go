@@ -12,18 +12,30 @@ import (
 
 // Slack provides io access to the Slack network.
 type Slack struct {
-	client *slack.Client
-	rtm    *slack.RTM
+	client      *slack.Client
+	rtm         *slack.RTM
+	ignoreUsers []string
 }
 
 // Static type checking.
 var _ transport.Transport = &Slack{}
 
 // New returns a new instance of Slack.
-func New(token string) (*Slack, error) {
+// ignoreUser must be set with the bot name or ID otherwise it will potentially read
+// it's own messages.
+// FIXME: this should work with names instead of just IDs, it's a relatively easy fix...
+func New(token string, ignoreUsers ...string) (*Slack, error) {
 	_slack := &Slack{
-		client: slack.New(token),
+		client:      slack.New(token),
+		ignoreUsers: ignoreUsers,
 	}
+
+	// for _, u := range ignoreUsers {
+	// user, err := _slack.GetUser(u)
+	// if err != nil {
+	// return nil, err
+	// }
+	// }
 
 	_slack.rtm = _slack.client.NewRTM()
 
@@ -52,7 +64,11 @@ func (s *Slack) TunnelEvents(ctx context.Context, evCh chan *transport.Event, er
 
 				switch event := msg.Data.(type) {
 				case *slack.MessageEvent:
-					// FIXME: ignore messages from self.
+					for _, user := range s.ignoreUsers {
+						if event.User == user {
+							return
+						}
+					}
 
 					evCh <- &transport.Event{
 						BaseEvent: &pb.BaseEvent{
@@ -61,6 +77,7 @@ func (s *Slack) TunnelEvents(ctx context.Context, evCh chan *transport.Event, er
 									ID:   event.User,
 									Name: s.rtm.GetInfo().GetUserByID(event.User).Name,
 								},
+								ID: event.Channel,
 							},
 							Body: event.Msg.Text,
 						},
@@ -127,6 +144,8 @@ func (s *Slack) Channels() ([]*transport.Channel, error) {
 
 // GetUser returns the full user data for the provided name or ID.
 func (s *Slack) GetUser(user string) (*transport.User, error) {
+	fmt.Println("get user", user)
+
 	_user, err := s.client.GetUserInfo(user)
 	if err != nil {
 		return nil, err
