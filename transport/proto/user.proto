@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package transport_proto;
+option go_package = "pb";
+
+// BaseUser is a network user.
+message BaseUser {
+    string ID = 1;
+    string name = 2;
+    // TODO: fill this in with other useful info.
+}
