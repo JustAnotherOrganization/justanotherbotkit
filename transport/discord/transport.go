@@ -1,7 +1,8 @@
-package discord
+package discord // package github.com/justanotherorganization/justanotherbotkit/transport/discord
 
 import (
 	"context"
+	"errors"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/justanotherorganization/justanotherbotkit/transport"
@@ -30,7 +31,8 @@ func New(token string) (*Discord, error) {
 	}, nil
 }
 
-// TunnelEvents translates discord events to transport.Events and passes them back up the stack.
+// TunnelEvents translates discord events to transport.Events tunneling them into evCh.
+// The session is terminated when ctx.Done returns.
 func (d *Discord) TunnelEvents(ctx context.Context, evCh chan *transport.Event, errCh chan error) {
 	d.session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
 		// Ignore messages from self.
@@ -70,4 +72,22 @@ func (d *Discord) TunnelEvents(ctx context.Context, evCh chan *transport.Event, 
 func (d *Discord) SendMessage(dest, msg string) error {
 	_, err := d.session.ChannelMessageSend(dest, msg)
 	return err
+}
+
+// SendEvent sends a new event to Slack.
+func (d *Discord) SendEvent(ev *transport.Event) error {
+	// TODO:
+	return errors.New("not yet implemented")
+}
+
+// Channels lists all the channels we have access to.
+func (d *Discord) Channels() ([]*transport.Channel, error) {
+	// TODO:
+	return nil, errors.New("not  yet implemented")
+}
+
+// GetUser returns the full user data for the provided name or ID.
+func (d *Discord) GetUser(user string) (*transport.User, error) {
+	// TODO:
+	return nil, errors.New("not  yet implemented")
 }

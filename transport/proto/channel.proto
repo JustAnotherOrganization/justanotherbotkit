@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package transport_proto;
+option go_package = "pb";
+
+// BaseChannel is a network channel.
+message BaseChannel {
+    message Attribute {
+        string value = 1;
+        string CreatorID = 2;
+        // FIXME: LastSet is a timestamp.
+    }
+
+    string ID = 1;
+    string name = 2;
+
+    repeated string MemberIDs = 10;
+    bool archived = 11;
+
+    Attribute topic = 20;
+    Attribute purpose = 21;
+}
