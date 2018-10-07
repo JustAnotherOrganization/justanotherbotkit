@@ -1,0 +1,29 @@
+language: go
+
+# Specify Go versions to test (".x" suffix means latest minor version, "tip" is
+# the latest development version)
+go:
+  - "1.9.x"
+  - "1.10.x"
+  - "1.11.x"
+  - tip
+
+# Allow failures on development version as they can happen due to third party
+# problems. Consider the build successful as soon as all other builds are
+# finished.
+matrix:
+  allow_failures:
+    - go: tip
+  fast_finish: true
+
+# Install all dependencies (including dependencies of tests) without installing
+# binaries.
+install:
+  - go get -d -t -v ./...
+
+# Check if gofmt or go vet report any errors then run all tests with the race
+# detector enabled.
+script:
+  - diff -u <(echo -n) <(gofmt -d .)
+  - go tool vet .
+  - go test -race -v ./...
