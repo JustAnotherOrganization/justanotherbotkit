@@ -43,7 +43,9 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	if discordToken != "" {
-		d, err := discord.New(discordToken)
+		d, err := discord.New(&transport.Config{
+			Token: discordToken,
+		})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
@@ -53,7 +55,9 @@ func main() {
 	}
 
 	if slackToken != "" {
-		s, err := slack.New(slackToken)
+		s, err := slack.New(&transport.Config{
+			Token: slackToken,
+		})
 		if err != nil {
 			fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
