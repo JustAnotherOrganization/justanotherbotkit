@@ -1,1 +1,1 @@
-Deprecated, [please use transport package instead](../transport/README.md).
+Deprecated, [please use transport package instead](../transport).
