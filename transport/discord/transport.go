@@ -12,8 +12,8 @@ import (
 type (
 	// Discord provides io access to the Discord network.
 	Discord struct {
-		session     *discordgo.Session
-		ignoreUsers []string
+		session *discordgo.Session
+		cfg     *transport.Config
 	}
 )
 
@@ -21,15 +21,19 @@ type (
 var _ transport.Transport = &Discord{}
 
 // New returns a new instance of Discord.
-func New(token string, ignoreUsers ...string) (*Discord, error) {
-	session, err := discordgo.New("Bot " + token)
+func New(cfg *transport.Config) (*Discord, error) {
+	if cfg == nil {
+		return nil, errors.New("cfg cannot be nil")
+	}
+
+	session, err := discordgo.New("Bot " + cfg.Token)
 	if err != nil {
 		return nil, err
 	}
 
 	return &Discord{
-		session:     session,
-		ignoreUsers: ignoreUsers,
+		session: session,
+		cfg:     cfg,
 	}, nil
 }
 
@@ -42,7 +46,7 @@ func (d *Discord) TunnelEvents(ctx context.Context, evCh chan *transport.Event, 
 			return
 		}
 
-		for _, user := range d.ignoreUsers {
+		for _, user := range d.cfg.IgnoreUsers {
 			if m.Author.ID == user ||
 				m.Author.Username == user {
 				return

@@ -19,4 +19,10 @@ type (
 		// GetUser returns the full user data for the provided name or ID.
 		GetUser(user string) (*User, error)
 	}
+
+	// Config is a transport configuration.
+	Config struct {
+		Token       string
+		IgnoreUsers []string
+	}
 )

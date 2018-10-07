@@ -12,22 +12,26 @@ import (
 
 // Slack provides io access to the Slack network.
 type Slack struct {
-	client      *slack.Client
-	rtm         *slack.RTM
-	ignoreUsers []string
+	client *slack.Client
+	rtm    *slack.RTM
+	cfg    *transport.Config
 }
 
 // Static type checking.
 var _ transport.Transport = &Slack{}
 
 // New returns a new instance of Slack.
-// ignoreUser must be set with the bot name or ID otherwise it will potentially read
+// cfg.IgnoreUsers must be set with the bot name or ID otherwise it will potentially read
 // it's own messages.
 // FIXME: this should work with names instead of just IDs, it's a relatively easy fix...
-func New(token string, ignoreUsers ...string) (*Slack, error) {
+func New(cfg *transport.Config) (*Slack, error) {
+	if cfg == nil {
+		return nil, errors.New("cfg cannot be nil")
+	}
+
 	_slack := &Slack{
-		client:      slack.New(token),
-		ignoreUsers: ignoreUsers,
+		client: slack.New(cfg.Token),
+		cfg:    cfg,
 	}
 
 	// for _, u := range ignoreUsers {
@@ -64,7 +68,7 @@ func (s *Slack) TunnelEvents(ctx context.Context, evCh chan *transport.Event, er
 
 				switch event := msg.Data.(type) {
 				case *slack.MessageEvent:
-					for _, user := range s.ignoreUsers {
+					for _, user := range s.cfg.IgnoreUsers {
 						if event.User == user {
 							return
 						}
