@@ -27,9 +27,10 @@ matrix:
 install:
   - go get -d -t -v ./...
 
-# Check if gofmt or go vet report any errors then run all tests with the race
-# detector enabled.
+# Check if gofmt or go vet report any errors, run all tests with the race
+# detector enabled, then build all examples to make sure they still compile.
 script:
   - diff -u <(echo -n) <(gofmt -d .)
   - go tool vet .
   - go test -race -v ./...
+  - go build -v $(go list ./**/_example)
