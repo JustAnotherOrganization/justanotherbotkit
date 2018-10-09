@@ -15,9 +15,11 @@ matrix:
   allow_failures:
     - go: tip
   fast_finish: true
-  # Also build with enabled module support regardless of $GOPATH
+  # Also build with enabled module support on versions which support it
   include:
     - go: "1.11.x"
+      env: GO111MODULE=on
+    - go: tip
       env: GO111MODULE=on
 
 # Install all dependencies (including dependencies of tests) without installing
