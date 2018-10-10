@@ -34,3 +34,6 @@ script:
   - go tool vet .
   - go test -race -v ./...
   - go build -v $(go list ./**/_example)
+
+# Force lowercase import path
+go_import_path: github.com/justanotherorganization/justanotherbotkit
