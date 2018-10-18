@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package justanotherbotkit_proto;
+option go_package = "pb";
+
+// BaseUser is an abstract representation of a user, both for network and database purposes.
+message BaseUser {
+    string ID = 1;
+    string name = 2;
+
+    repeated string permissions = 10;
+}

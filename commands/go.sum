@@ -5,7 +5,8 @@ github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7a
 github.com/gorilla/websocket v1.4.0 h1:WDFjx/TMzVgy9VdMMQi2K2Emtwi2QcUQsztZ/zLaH/Q=
 github.com/gorilla/websocket v1.4.0/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
 github.com/justanotherorganization/justanotherbotkit v0.0.0-20181022230545-b01426cbf50d h1:3ej/E/oaak6iGXPi8E8ugcX2B9EVGmCv0fcRKjHSoVU=
-github.com/nlopes/slack v0.4.0 h1:OVnHm7lv5gGT5gkcHsZAyw++oHVFihbjWbL3UceUpiA=
+github.com/justanotherorganization/justanotherbotkit/transport v0.0.1 h1:1KMJykpPvCLn8vQFugTGCCZiOpCoeq+yEQ+vO0yX7W4=
+github.com/justanotherorganization/justanotherbotkit/transport v0.0.1/go.mod h1:1A3KHsI5A1KAlM2IUt812FYzH671eBxtX3p9+b2pj+Q=
 github.com/nlopes/slack v0.4.0/go.mod h1:jVI4BBK3lSktibKahxBF74txcK2vyvkza1z/+rRnVAM=
 github.com/pkg/errors v0.8.0 h1:WdK/asTD0HN+q6hsWO3/vpuAkAr+tw6aNJNDFFf0+qw=
 github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
