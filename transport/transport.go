@@ -2,6 +2,7 @@ package transport // package github.com/justanotherorganization/justanotherbotki
 
 import (
 	"context"
+	"errors"
 )
 
 type (
@@ -18,6 +19,11 @@ type (
 		Channels() ([]*Channel, error)
 		// GetUser returns the full user data for the provided name or ID.
 		GetUser(user string) (*User, error)
+		// GetUsers returns a list of all known users.
+		GetUsers() ([]*User, error)
+		// GetConversation gets a private conversation for the given user ID.
+		// This varies depending on network (may just be the user ID) but is required for Slack.
+		GetConversation(userID string) (string, error)
 	}
 
 	// Config is a transport configuration.
@@ -25,4 +31,11 @@ type (
 		Token       string
 		IgnoreUsers []string
 	}
+)
+
+var (
+	// ErrNilTransport should be returned in places where a transport is required but is not set.
+	ErrNilTransport = errors.New("transport cannot be nil")
+	// ErrUserNotFound is returned if teh transport cannot locate a given user.
+	ErrUserNotFound = errors.New("user not found")
 )

@@ -1,10 +1,18 @@
-package commands
+// Package commands provides command handling capable of ingesting transport.Events
+// and responding over the provided transport wire.
+// If the userDB is set permissions on a command will be honored otherwise
+// if no userDB is set permissions will be ignored entirely (this could possibly
+// use improvement).
+package commands // import "github.com/justanotherorganization/justanotherbotkit/commands"
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
 	"github.com/justanotherorganization/justanotherbotkit/transport"
+	"github.com/justanotherorganization/justanotherbotkit/users"
+	"github.com/pkg/errors"
 )
 
 type (
@@ -21,12 +29,10 @@ type (
 		Disabled bool
 		Hidden   bool
 
-		pm       *_pm // FIXME: replace this with a real permissions manager
+		UserDB   users.DB
 		parent   *Command
 		children []*Command
 	}
-
-	_pm struct{}
 )
 
 // Execute executes the command using the provided event.
@@ -37,7 +43,16 @@ func (c *Command) Execute(ev *transport.Event) error {
 		return nil
 	}
 
-	// TODO: handle perms
+	if c.UserDB != nil && len(c.Perms) > 0 {
+		ok, err := _hasPerms(c, ev.Origin.Sender.ID)
+		if err != nil {
+			return err
+		}
+
+		if !ok {
+			return nil
+		}
+	}
 
 	fields := strings.Fields(ev.Body)
 
@@ -51,6 +66,17 @@ func (c *Command) Execute(ev *transport.Event) error {
 		return nil
 	}
 
+	if _c.UserDB != nil && len(_c.Perms) > 0 {
+		ok, err := _hasPerms(c, ev.Origin.Sender.ID)
+		if err != nil {
+			return err
+		}
+
+		if !ok {
+			return nil
+		}
+	}
+
 	if _c.ExecFunc == nil {
 		return nil
 	}
@@ -62,8 +88,8 @@ func (c *Command) Execute(ev *transport.Event) error {
 func (c *Command) AddCommand(cmd *Command) {
 	cmd.parent = c
 
-	if cmd.pm == nil {
-		cmd.pm = c.pm
+	if c.UserDB != nil {
+		cmd.UserDB = c.UserDB
 	}
 
 	c.children = append(c.children, cmd)
@@ -131,4 +157,26 @@ func _isCommand(c *Command, s string) bool {
 	}
 
 	return false
+}
+
+func _hasPerms(c *Command, id string) (bool, error) {
+	u, err := c.UserDB.GetUser(context.Background(), id)
+	if err != nil {
+		return false, errors.Wrap(err, "UserDB.GetUser")
+	}
+
+	for _, p := range u.GetPermissions() {
+		// Root users can do all the things!!!
+		if p == "root" {
+			return true, nil
+		}
+
+		for _, _p := range c.Perms {
+			if p == _p {
+				return true, nil
+			}
+		}
+	}
+
+	return false, nil
 }

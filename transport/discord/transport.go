@@ -6,7 +6,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/justanotherorganization/justanotherbotkit/transport"
-	"github.com/justanotherorganization/justanotherbotkit/transport/proto"
+	"github.com/justanotherorganization/justanotherbotkit/transport/internal/proto"
 )
 
 type (
@@ -96,11 +96,23 @@ func (d *Discord) SendEvent(ev *transport.Event) error {
 // Channels lists all the channels we have access to.
 func (d *Discord) Channels() ([]*transport.Channel, error) {
 	// TODO:
-	return nil, errors.New("not  yet implemented")
+	return nil, errors.New("not yet implemented")
 }
 
 // GetUser returns the full user data for the provided name or ID.
 func (d *Discord) GetUser(user string) (*transport.User, error) {
 	// TODO:
-	return nil, errors.New("not  yet implemented")
+	return nil, errors.New("not yet implemented")
+}
+
+// GetUsers returns a list of all known users.
+func (d *Discord) GetUsers() ([]*transport.User, error) {
+	// TODO:
+	return nil, errors.New("not yet implmemented")
+}
+
+// GetConversation gets a private conversation for the given user ID.
+func (d *Discord) GetConversation(userID string) (string, error) {
+	// TODO:
+	return "", errors.New("not yet implemented")
 }

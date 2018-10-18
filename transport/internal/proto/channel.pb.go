@@ -7,12 +7,10 @@ Package pb is a generated protocol buffer package.
 It is generated from these files:
 	channel.proto
 	event.proto
-	user.proto
 
 It has these top-level messages:
 	BaseChannel
 	BaseEvent
-	BaseUser
 */
 package pb
 

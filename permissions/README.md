@@ -1,0 +1,1 @@
+Deprecated, [please use users package instead](../users).
