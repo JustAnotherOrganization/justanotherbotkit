@@ -3,12 +3,14 @@ package internal
 import (
 	"testing"
 
+	"github.com/gofrs/uuid"
+	"github.com/justanotherorganization/justanotherbotkit/internal/test"
 	"github.com/justanotherorganization/justanotherbotkit/proto"
-	uuid "github.com/satori/go.uuid"
 )
 
 func newTestUser(tb testing.TB) *pb.BaseUser {
-	uid := uuid.NewV4()
+	uid, err := uuid.NewV4()
+	test.OK(tb, err)
 	id := uid.String()
 
 	return &pb.BaseUser{
