@@ -24,7 +24,8 @@ matrix:
 
 # Install all dependencies (including dependencies of tests) without installing
 # binaries.
-#install:
+install:
+  -
 #  - go get -d -t -v ./...
 
 # Check if gofmt or go vet report any errors, run all tests with the race
