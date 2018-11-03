@@ -23,9 +23,9 @@ matrix:
       env: GO111MODULE=on
 
 # Install all dependencies (including dependencies of tests) without installing
-# binaries.
+# binaries (don't do this if we're building with modules).
 install:
-  - go get -d -t -v ./...
+  - if [ $GO111MODULE != on ]; then go get -d -t -v ./...; fi
 
 # Check if gofmt or go vet report any errors, run all tests with the race
 # detector enabled, then build all examples to make sure they still compile.
