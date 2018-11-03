@@ -6,7 +6,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/justanotherorganization/justanotherbotkit/transport"
-	"github.com/justanotherorganization/justanotherbotkit/transport/internal/proto"
+	"github.com/justanotherorganization/justanotherbotkit/transport/proto"
 )
 
 type (

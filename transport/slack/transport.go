@@ -7,7 +7,7 @@ import (
 
 	bkPb "github.com/justanotherorganization/justanotherbotkit/proto"
 	"github.com/justanotherorganization/justanotherbotkit/transport"
-	"github.com/justanotherorganization/justanotherbotkit/transport/internal/proto"
+	"github.com/justanotherorganization/justanotherbotkit/transport/proto"
 	"github.com/nlopes/slack"
 )
 
