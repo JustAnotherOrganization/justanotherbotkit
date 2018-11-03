@@ -7,8 +7,6 @@ github.com/gorilla/websocket v1.4.0 h1:WDFjx/TMzVgy9VdMMQi2K2Emtwi2QcUQsztZ/zLaH
 github.com/gorilla/websocket v1.4.0/go.mod h1:E7qHFY5m1UJ88s3WnNqhKjPHQ0heANvMoAMk2YaljkQ=
 github.com/justanotherorganization/justanotherbotkit/proto v0.0.1 h1:N2hHF03EYoOfKXFlU4Sx97laA1fGu5K7K0ZjgbaGjF8=
 github.com/justanotherorganization/justanotherbotkit/proto v0.0.1/go.mod h1:r2hwUKNIK21pZ+e1KuoNWCRDJIpotmDrwS02cMKZu6c=
-github.com/justanotherorganization/justanotherbotkit/transport v0.0.2 h1:ooS6/mfTebytKcyzOvGSYr/Ay0K3uxegSIrEumrCqxw=
-github.com/justanotherorganization/justanotherbotkit/transport v0.0.2/go.mod h1:gbF/m3czwTohZm7mRNbG/E7ycOmsSNMThrdMC+DuOjg=
 github.com/justanotherorganization/justanotherbotkit/users v0.0.1 h1:g96VVlYIYV5kRYfG2eLBQa5Cptg1WaKu2Xv8eftOz6M=
 github.com/justanotherorganization/justanotherbotkit/users v0.0.1/go.mod h1:pSY/4vMnSHd4qjLQzLFe3WyGhpVYhNibLQuZTjkIpE4=
 github.com/lusis/go-slackbot v0.0.0-20180109053408-401027ccfef5/go.mod h1:c2mYKRyMb1BPkO5St0c/ps62L4S0W2NAkaTXj9qEI+0=
