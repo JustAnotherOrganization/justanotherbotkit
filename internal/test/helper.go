@@ -34,3 +34,35 @@ func Equals(tb testing.TB, exp, act interface{}) {
 		tb.FailNow()
 	}
 }
+
+// EqualsMsg fails the test if exp is not equal to act, allowing a message to be provided.
+func EqualsMsg(tb testing.TB, exp, act interface{}, msg string, v ...interface{}) {
+	if !reflect.DeepEqual(exp, act) {
+		_, file, line, _ := runtime.Caller(1)
+		// FIXME: I don't like this sprintf in here, but I'm having issues making this work lol
+		fmt.Printf("\033[31m%s:%d: "+fmt.Sprintf(msg, v...)+"\n\n\texp: %#v\n\n\tgot: %#v\033[39m\n\n", filepath.Base(file), line, exp, act)
+		tb.FailNow()
+	}
+}
+
+type (
+	// TableTest is used to run a simple table test.
+	TableTest struct {
+		Cases []*TableTestCase
+		F     func(interface{}) interface{}
+	}
+
+	// TableTestCase ...
+	TableTestCase struct {
+		Val interface{}
+		Exp interface{}
+	}
+)
+
+// Run a TableTest
+func (t *TableTest) Run(tb testing.TB) {
+	for i, tc := range t.Cases {
+		out := t.F(tc.Val)
+		EqualsMsg(tb, tc.Exp, out, "test case %d", i+1)
+	}
+}
