@@ -6,7 +6,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/justanotherorganization/justanotherbotkit/transport"
-	"github.com/justanotherorganization/justanotherbotkit/transport/internal/proto"
+	"github.com/justanotherorganization/justanotherbotkit/transport/proto"
 )
 
 type (
@@ -22,8 +22,8 @@ var _ transport.Transport = &Discord{}
 
 // New returns a new instance of Discord.
 func New(cfg *transport.Config) (*Discord, error) {
-	if cfg == nil {
-		return nil, errors.New("cfg cannot be nil")
+	if err := cfg.Validate(); err != nil {
+		return nil, err
 	}
 
 	session, err := discordgo.New("Bot " + cfg.Token)

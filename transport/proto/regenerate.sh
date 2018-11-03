@@ -33,4 +33,4 @@ if [[ -z "${PROTOC// }" ]]; then
 fi
 
 ### Pre-flight complete, let's do stuff
-"${PROTOC}" -I "${PROTO_DIR}/." "${PROTO_DIR}/"*.proto --gogo_out=plugins=grpc:"${PROTO_DIR}/." --proto_path=../../../../../:.
+"${PROTOC}" -I "${PROTO_DIR}/." "${PROTO_DIR}/"*.proto --gogo_out=plugins=grpc:"${PROTO_DIR}/." --proto_path=../../../../:.
