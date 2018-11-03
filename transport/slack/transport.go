@@ -25,8 +25,8 @@ var _ transport.Transport = &Slack{}
 // cfg.IgnoreUsers must be set with the bot name or ID otherwise it will potentially read
 // it's own messages.
 func New(cfg *transport.Config) (*Slack, error) {
-	if cfg == nil {
-		return nil, errors.New("cfg cannot be nil")
+	if err := cfg.Validate(); err != nil {
+		return nil, err
 	}
 
 	_slack := &Slack{

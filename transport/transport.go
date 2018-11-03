@@ -34,8 +34,25 @@ type (
 )
 
 var (
+	// ErrNilConfig is returned if no config is passed into a transport 'New' function.
+	ErrNilConfig = errors.New("cfg cannot be nil")
+	// ErrEmptyToken is returned if no token is provided in the given config.
+	ErrEmptyToken = errors.New("token cannot be empty")
 	// ErrNilTransport should be returned in places where a transport is required but is not set.
 	ErrNilTransport = errors.New("transport cannot be nil")
 	// ErrUserNotFound is returned if teh transport cannot locate a given user.
 	ErrUserNotFound = errors.New("user not found")
 )
+
+// Validate a configuration.
+func (c *Config) Validate() error {
+	if c == nil {
+		return ErrNilConfig
+	}
+
+	if c.Token == "" {
+		return ErrEmptyToken
+	}
+
+	return nil
+}
