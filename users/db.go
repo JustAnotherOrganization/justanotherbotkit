@@ -12,6 +12,6 @@ type (
 		// UpdateUser updates a user record in the database.
 		UpdateUser(ctx context.Context, u User) (User, error)
 		// DeleteUser deletes a user record from the database.
-		DeleteUser(ctx context.Context, id string) (User, error)
+		DeleteUser(ctx context.Context, id string) error
 	}
 )
