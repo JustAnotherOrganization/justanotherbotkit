@@ -1,4 +1,4 @@
-package bolt_test
+package mock_test
 
 import (
 	"context"
@@ -7,19 +7,8 @@ import (
 	"github.com/gofrs/uuid"
 	"github.com/justanotherorganization/justanotherbotkit/internal/test"
 	"github.com/justanotherorganization/justanotherbotkit/proto"
-	. "github.com/justanotherorganization/justanotherbotkit/users/bolt"
+	. "github.com/justanotherorganization/justanotherbotkit/users/mock"
 )
-
-const _path = "./test.db"
-
-func initDB(tb testing.TB) *DB {
-	db, err := New(&Config{
-		File: _path,
-	})
-
-	test.OK(tb, err)
-	return db
-}
 
 func newTestUser(tb testing.TB) *pb.BaseUser {
 	uid, err := uuid.NewV4()
@@ -34,7 +23,7 @@ func newTestUser(tb testing.TB) *pb.BaseUser {
 
 func TestCRUD(t *testing.T) {
 	ctx := context.Background()
-	db := initDB(t)
+	db := New()
 	// create
 	u := newTestUser(t)
 	_u, err := db.CreateUser(ctx, u)

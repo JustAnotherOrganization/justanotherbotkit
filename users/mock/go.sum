@@ -1,5 +1,3 @@
-github.com/boltdb/bolt v1.3.1 h1:JQmyP4ZBrce+ZQu0dY660FMfatumYDLun9hBCUVIkF4=
-github.com/boltdb/bolt v1.3.1/go.mod h1:clJnj/oiGkjum5o1McbSZDSLxVThjynRyGBgiAx27Ps=
 github.com/gofrs/uuid v3.1.0+incompatible h1:q2rtkjaKT4YEr6E1kamy0Ha4RtepWlQBedyHx0uzKwA=
 github.com/gofrs/uuid v3.1.0+incompatible/go.mod h1:b2aQJv3Z4Fp6yNu3cdSllBxTCLRxnplIgP/c0N/04lM=
 github.com/gogo/protobuf v1.1.1 h1:72R+M5VuhED/KujmZVcIquuo8mBgX4oVda//DQb3PXo=
@@ -8,9 +6,3 @@ github.com/justanotherorganization/justanotherbotkit/internal v0.0.1 h1:2odRvxW1
 github.com/justanotherorganization/justanotherbotkit/internal v0.0.1/go.mod h1:Ky6Plt9xEtoSkl64huLSkq0lq1xYKBxI58Wb45mucV8=
 github.com/justanotherorganization/justanotherbotkit/proto v0.0.1 h1:N2hHF03EYoOfKXFlU4Sx97laA1fGu5K7K0ZjgbaGjF8=
 github.com/justanotherorganization/justanotherbotkit/proto v0.0.1/go.mod h1:r2hwUKNIK21pZ+e1KuoNWCRDJIpotmDrwS02cMKZu6c=
-github.com/pkg/errors v0.8.0 h1:WdK/asTD0HN+q6hsWO3/vpuAkAr+tw6aNJNDFFf0+qw=
-github.com/pkg/errors v0.8.0/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
-go.etcd.io/bbolt v1.3.0 h1:oY10fI923Q5pVCVt1GBTZMn8LHo5M+RCInFpeMnV4QI=
-go.etcd.io/bbolt v1.3.0/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
-golang.org/x/sys v0.0.0-20181022134430-8a28ead16f52 h1:iuRaATs1WHBt1WKav1CczVukq8i0T8geqpAMCUAnT+o=
-golang.org/x/sys v0.0.0-20181022134430-8a28ead16f52/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=

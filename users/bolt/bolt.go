@@ -70,16 +70,17 @@ func (db *DB) UpdateUser(ctx context.Context, u users.User) (users.User, error) 
 }
 
 // DeleteUser deletes a user record from the database.
-func (db *DB) DeleteUser(ctx context.Context, id string) (users.User, error) {
+func (db *DB) DeleteUser(ctx context.Context, id string) error {
 	prev, err := internal.GetSnap([]byte(id), db._db)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	e, err := internal.NewDeleteEvent(prev.User, prev.Version)
 	if err != nil {
-		return nil, errors.Wrap(err, "NewDeleteEvent")
+		return errors.Wrap(err, "NewDeleteEvent")
 	}
 
-	return e.Apply(ctx, db._db)
+	_, err = e.Apply(ctx, db._db)
+	return err
 }
