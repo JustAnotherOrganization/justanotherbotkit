@@ -1,0 +1,67 @@
+package discord
+
+import (
+	"context"
+	"errors"
+	"fmt"
+
+	"github.com/bwmarrin/discordgo"
+	"justanother.org/justanotherbotkit/transport"
+	"justanother.org/justanotherbotkit/transport/pkg/option"
+)
+
+type Transport struct {
+	Session *discordgo.Session
+	Config  transport.Config
+}
+
+func New(cfg transport.Config) (Transport, error) {
+	t := Transport{
+		Config: cfg,
+	}
+
+	var err error
+	t.Session, err = discordgo.New("Bot" + cfg.Token)
+	return t, err
+}
+
+func (t Transport) Start(ctx context.Context) error {
+	if err := t.Session.Open(); err != nil {
+		return err
+	}
+	defer func() {
+		_ = t.Session.Close()
+	}()
+
+	// Block until context is finished.
+	<-ctx.Done()
+	if err := ctx.Err(); err != nil && !errors.Is(err, context.Canceled) {
+		return err
+	}
+
+	return nil
+}
+
+func (t Transport) SendMessage(_ context.Context, dest string, options ...transport.MsgOption) error {
+	var (
+		msg            string
+		requestOptions []discordgo.RequestOption
+	)
+	for _, opt := range options {
+		switch o := opt.(type) {
+		case option.Text:
+			msg = o.Value
+		case discordgo.RequestOption:
+			requestOptions = append(requestOptions, o)
+		default:
+			return fmt.Errorf("unsupported option: %T", o)
+		}
+	}
+
+	if msg == "" {
+		return errors.New("expected Text option to be included")
+	}
+
+	_, err := t.Session.ChannelMessageSend(dest, msg)
+	return err
+}
