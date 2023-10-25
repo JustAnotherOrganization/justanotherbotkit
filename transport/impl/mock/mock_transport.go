@@ -35,6 +35,18 @@ func (m *MockTransport) EXPECT() *MockTransportMockRecorder {
 	return m.recorder
 }
 
+// MessageEventHandler mocks base method.
+func (m *MockTransport) MessageEventHandler(arg0 func(context.Context, transport.Event) error, arg1 func(error)) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "MessageEventHandler", arg0, arg1)
+}
+
+// MessageEventHandler indicates an expected call of MessageEventHandler.
+func (mr *MockTransportMockRecorder) MessageEventHandler(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MessageEventHandler", reflect.TypeOf((*MockTransport)(nil).MessageEventHandler), arg0, arg1)
+}
+
 // SendMessage mocks base method.
 func (m *MockTransport) SendMessage(arg0 context.Context, arg1 string, arg2 ...transport.MsgOption) error {
 	m.ctrl.T.Helper()

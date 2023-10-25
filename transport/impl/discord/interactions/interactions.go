@@ -6,12 +6,13 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"go.uber.org/zap"
+	"justanother.org/justanotherbotkit/transport/impl/discord"
 )
 
 type (
 	Config struct {
 		Log            *zap.Logger
-		Session        *discordgo.Session
+		Transport      discord.Transport
 		RemoveCommands bool
 	}
 
@@ -28,16 +29,20 @@ type (
 )
 
 func New(cfg Config) *Controller {
-	return &Controller{
+	c := &Controller{
 		Config:          cfg,
 		commandHandlers: make(map[string]command),
 	}
+
+	c.Config.Transport.Session.AddHandler(c.Handler)
+
+	return c
 }
 
 func (c *Controller) Register(f func() (*discordgo.ApplicationCommand, func(session *discordgo.Session, ic *discordgo.InteractionCreate))) error {
 	cmd, handler := f()
 	name := cmd.Name
-	cmd, err := c.Config.Session.ApplicationCommandCreate(c.Config.Session.State.User.ID, "", cmd)
+	cmd, err := c.Config.Transport.Session.ApplicationCommandCreate(c.Config.Transport.Session.State.User.ID, "", cmd)
 	if err != nil {
 		return fmt.Errorf("s.ApplicationCommandCreate(%s), %w", name, err)
 	}
@@ -58,7 +63,7 @@ func (c *Controller) Close() error {
 		defer c.mux.Unlock()
 
 		for name, cmd := range c.commandHandlers {
-			err := c.Config.Session.ApplicationCommandDelete(c.Config.Session.State.User.ID, "", cmd.id)
+			err := c.Config.Transport.Session.ApplicationCommandDelete(c.Config.Transport.Session.State.User.ID, "", cmd.id)
 			if err != nil {
 				return fmt.Errorf("error removing command, %s: %w", name, err)
 			}

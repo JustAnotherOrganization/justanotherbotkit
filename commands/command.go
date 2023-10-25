@@ -7,6 +7,7 @@ import (
 
 	"justanother.org/justanotherbotkit/transport"
 	"justanother.org/justanotherbotkit/transport/pkg/option"
+	"justanother.org/justanotherbotkit/users/repo"
 )
 
 type (
@@ -16,19 +17,21 @@ type (
 		Short   string
 		Long    string
 
-		ExecFunc func(event transport.Event) error
+		ExecFunc func(cmd *Command, event transport.Event) error
 
-		//Perms    []string
+		Perms    []string
 		Disabled bool
 		Hidden   bool
 
-		//UserDB   users.DB
 		parent   *Command
 		children []*Command
+
+		ctx    context.Context
+		userDB repo.Repo
 	}
 )
 
-func (c *Command) Execute(ev transport.Event) error {
+func (c *Command) Execute(ctx context.Context, ev transport.Event) error {
 	if c.Disabled {
 		return nil
 	}
@@ -37,16 +40,22 @@ func (c *Command) Execute(ev transport.Event) error {
 		return nil
 	}
 
-	//if c.UserDB != nil && len(c.Perms) > 0 {
-	//	ok, err := _hasPerms(c, ev.Origin.Sender.ID)
-	//	if err != nil {
-	//		return err
-	//	}
-	//
-	//	if !ok {
-	//		return nil
-	//	}
-	//}
+	c.ctx = ctx
+	defer func() {
+		c.ctx = nil
+	}()
+
+	if c.UserDB() != nil && len(c.Perms) > 0 {
+		ok, err := _hasPerms(c, ev.Origin.Sender.ID)
+		if err != nil {
+			return err
+		}
+
+		if !ok {
+			// FIXME: consider returning an error instead of ignoring the command.
+			return nil
+		}
+	}
 
 	fields := strings.Fields(ev.Body)
 
@@ -60,32 +69,51 @@ func (c *Command) Execute(ev transport.Event) error {
 		return nil
 	}
 
-	//if _c.UserDB != nil && len(_c.Perms) > 0 {
-	//	ok, err := _hasPerms(c, ev.Origin.Sender.ID)
-	//	if err != nil {
-	//		return err
-	//	}
-	//
-	//	if !ok {
-	//		return nil
-	//	}
-	//}
+	if _c.UserDB() != nil && len(_c.Perms) > 0 {
+		ok, err := _hasPerms(c, ev.Origin.Sender.ID)
+		if err != nil {
+			return err
+		}
+
+		if !ok {
+			return nil
+		}
+	}
 
 	if _c.ExecFunc == nil {
 		return nil
 	}
 
-	return _c.ExecFunc(ev)
+	return _c.ExecFunc(_c, ev)
 }
 
 func (c *Command) AddCommand(cmd *Command) {
 	cmd.parent = c
-
-	//if c.UserDB != nil {
-	//	cmd.UserDB = c.UserDB
-	//}
-
 	c.children = append(c.children, cmd)
+}
+
+func (c *Command) Root() *Command {
+	r := c
+	for {
+		if r.parent == nil {
+			return r
+		}
+
+		r = r.parent
+	}
+}
+
+func (c *Command) WithUserDB(db repo.Repo) *Command {
+	c.Root().userDB = db
+	return c
+}
+
+func (c *Command) UserDB() repo.Repo {
+	return c.Root().userDB
+}
+
+func (c *Command) Context() context.Context {
+	return c.ctx
 }
 
 func (c *Command) help(ev transport.Event) error {
@@ -104,7 +132,7 @@ func (c *Command) help(ev transport.Event) error {
 
 		c.helpForChildren(&b)
 		return ev.SendMessage(
-			context.Background(),
+			c.Context(),
 			ev.Origin.ID,
 			option.Text{
 				Value: b.String(),
@@ -122,8 +150,7 @@ func (c *Command) help(ev transport.Event) error {
 	_c.helpForChildren(&b)
 
 	return ev.SendMessage(
-		// FIXME: get the context from the call flow.
-		context.Background(),
+		c.Context(),
 		ev.Origin.ID,
 		option.Text{
 			Value: b.String(),
@@ -223,24 +250,24 @@ func _isCommand(c *Command, s string) bool {
 	return false
 }
 
-//func _hasPerms(c *Command, id string) (bool, error) {
-//	u, err := c.UserDB.GetUser(context.Background(), id)
-//	if err != nil {
-//		return false, errors.Wrap(err, "UserDB.GetUser")
-//	}
-//
-//	for _, p := range u.GetPermissions() {
-//		// Root users can do all the things!!!
-//		if p == "root" {
-//			return true, nil
-//		}
-//
-//		for _, _p := range c.Perms {
-//			if p == _p {
-//				return true, nil
-//			}
-//		}
-//	}
-//
-//	return false, nil
-//}
+func _hasPerms(c *Command, networkID string) (bool, error) {
+	u, err := c.UserDB().GetUserByNetworkID(c.Context(), networkID)
+	if err != nil {
+		return false, fmt.Errorf("UserDB.GetUserByNetworkID, %w", err)
+	}
+
+	for _, p := range u.Permissions {
+		// Root users can do all the things!!!
+		if p == "root" {
+			return true, nil
+		}
+
+		for _, _p := range c.Perms {
+			if p == _p {
+				return true, nil
+			}
+		}
+	}
+
+	return false, nil
+}

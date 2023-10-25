@@ -21,8 +21,39 @@ func New(cfg transport.Config) (Transport, error) {
 	}
 
 	var err error
-	t.Session, err = discordgo.New("Bot" + cfg.Token)
+	t.Session, err = discordgo.New("Bot " + cfg.Token)
 	return t, err
+}
+
+func (t Transport) MessageEventHandler(h func(ctx context.Context, ev transport.Event) error, errHandler func(err error)) {
+	t.Session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
+		if m.Author.ID == s.State.User.ID {
+			return
+		}
+
+		for _, user := range t.Config.IgnoreUsers {
+			if m.Author.ID == user ||
+				m.Author.Username == user {
+				return
+			}
+		}
+
+		// FIXME: get the context somewhere passed into the transport.
+		err := h(context.Background(), transport.Event{
+			Origin: transport.EventOrigin{
+				ID: m.ChannelID,
+				Sender: transport.EventOriginSender{
+					ID:   m.Author.ID,
+					Name: m.Author.Username,
+				},
+			},
+			Body:      m.Content,
+			Transport: t,
+		})
+		if err != nil {
+			errHandler(err)
+		}
+	})
 }
 
 func (t Transport) Start(ctx context.Context) error {

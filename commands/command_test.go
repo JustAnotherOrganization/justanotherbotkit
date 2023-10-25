@@ -1,6 +1,7 @@
 package commands_test
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"testing"
@@ -15,6 +16,8 @@ import (
 	"justanother.org/justanotherbotkit/transport/pkg/option"
 )
 
+var ctx = context.Background()
+
 func TestCommand_Execute(t *testing.T) {
 	tr := mock.NewMockTransport(gomock.NewController(t))
 
@@ -24,7 +27,7 @@ func TestCommand_Execute(t *testing.T) {
 		Use:     "greet",
 		Aliases: []string{"hello"},
 		Long:    "A command which greets someone",
-		ExecFunc: func(ev transport.Event) error {
+		ExecFunc: func(_ *commands.Command, ev transport.Event) error {
 			assert.Equal(t, "", ev.Body)
 			called = true
 			return nil
@@ -34,7 +37,7 @@ func TestCommand_Execute(t *testing.T) {
 		Use:     "dnc",
 		Aliases: []string{"do not call"},
 		Long:    "A command that should never be called",
-		ExecFunc: func(ev transport.Event) error {
+		ExecFunc: func(_ *commands.Command, ev transport.Event) error {
 			return errors.New("should not have been called")
 		},
 	})
@@ -52,18 +55,18 @@ func TestCommand_Execute(t *testing.T) {
 	}
 
 	called = false
-	err := root.Execute(ev)
+	err := root.Execute(ctx, ev)
 	require.NoError(t, err)
 	assert.True(t, called)
 
 	called = false
 	ev.Body = "hello"
-	err = root.Execute(ev)
+	err = root.Execute(ctx, ev)
 	require.NoError(t, err)
 	assert.True(t, called)
 
 	ev.Body = "dnc"
-	err = root.Execute(ev)
+	err = root.Execute(ctx, ev)
 	require.Error(t, err)
 }
 
@@ -114,7 +117,7 @@ func TestCommand_Help(t *testing.T) {
 				},
 			})
 
-		err := root.Execute(transport.Event{
+		err := root.Execute(ctx, transport.Event{
 			Origin: transport.EventOrigin{
 				ID: "channel-id",
 				Sender: transport.EventOriginSender{
@@ -139,7 +142,7 @@ func TestCommand_Help(t *testing.T) {
 				},
 			})
 
-		err := root.Execute(transport.Event{
+		err := root.Execute(ctx, transport.Event{
 			Origin: transport.EventOrigin{
 				ID: "channel-id",
 				Sender: transport.EventOriginSender{
@@ -164,7 +167,7 @@ func TestCommand_Help(t *testing.T) {
 				},
 			})
 
-		err := root.Execute(transport.Event{
+		err := root.Execute(ctx, transport.Event{
 			Origin: transport.EventOrigin{
 				ID: "channel-id",
 				Sender: transport.EventOriginSender{
