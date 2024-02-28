@@ -56,23 +56,6 @@ func (t Transport) MessageEventHandler(h func(ctx context.Context, ev transport.
 	})
 }
 
-func (t Transport) Start(ctx context.Context) error {
-	if err := t.Session.Open(); err != nil {
-		return err
-	}
-	defer func() {
-		_ = t.Session.Close()
-	}()
-
-	// Block until context is finished.
-	<-ctx.Done()
-	if err := ctx.Err(); err != nil && !errors.Is(err, context.Canceled) {
-		return err
-	}
-
-	return nil
-}
-
 func (t Transport) SendMessage(_ context.Context, dest string, options ...transport.MsgOption) error {
 	var (
 		msg            string
